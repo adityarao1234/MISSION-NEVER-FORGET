@@ -1,0 +1,16 @@
+Mission-Never-Forget/
+├─ backend/
+│  ├─ models/
+│  │   └─ model.joblib        # generated after training
+│  ├─ app.py
+│  ├─ train_model.py
+│  ├─ requirements.txt
+├─ frontend/
+│  ├─ public/
+│  │   └─ index.html
+│  ├─ src/
+│  │   ├─ App.jsx
+│  │   ├─ index.jsx
+│  │   └─ styles.css
+│  ├─ package.json
+├─ README.md
