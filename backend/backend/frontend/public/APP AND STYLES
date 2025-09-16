@@ -1,0 +1,119 @@
+import React from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App";
+import "./styles.css";
+
+createRoot(document.getElementById("root")).render(<App />);
+frontend/src/App.jsx
+jsx
+Copy code
+import React, { useState } from "react";
+
+const defaultData = {
+  age: 70,
+  education_years: 10,
+  mmse: 25,
+  recall_test: 5,
+  family_history: 0,
+  comorbid: 0
+};
+
+export default function App() {
+  const [form, setForm] = useState(defaultData);
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const backendUrl = "http://localhost:5000/predict";
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: Number(e.target.value) });
+  };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    const res = await fetch(backendUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form)
+    });
+    const data = await res.json();
+    setResult(data);
+    setLoading(false);
+  };
+
+  return (
+    <div className="container">
+      <h1>Mission: Never Forget</h1>
+      <p>🧠 Demo tool for dementia/Alzheimer's risk analysis (educational only).</p>
+
+      <div className="form">
+        {Object.keys(form).map((key) => (
+          <div key={key}>
+            <label>{key}</label>
+            <input
+              type="number"
+              name={key}
+              value={form[key]}
+              onChange={handleChange}
+            />
+          </div>
+        ))}
+      </div>
+
+      <button onClick={handleSubmit} disabled={loading}>
+        {loading ? "Analyzing..." : "Analyze Risk"}
+      </button>
+
+      {result && (
+        <div className="result">
+          <h3>Result</h3>
+          <p>Risk band: <b>{result.risk_band}</b></p>
+          <p>Probability: {result.probability}</p>
+          <p>{result.note}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+frontend/src/styles.css
+css
+Copy code
+body {
+  font-family: Arial, sans-serif;
+  background: #f9fafb;
+  padding: 20px;
+}
+.container {
+  max-width: 600px;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+h1 { color: #2c3e50; }
+.form div {
+  margin-bottom: 10px;
+}
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+input {
+  width: 100%;
+  padding: 8px;
+}
+button {
+  margin-top: 10px;
+  padding: 10px 15px;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+.result {
+  margin-top: 20px;
+  background: #ecfdf5;
+  padding: 15px;
+  border-radius: 5px;
+}
